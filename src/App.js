@@ -11,15 +11,15 @@ import { Header } from "./Components/Header.js";
 import { SearchBar } from "./Components/SearchBar.js";
 import { WeatherIcon } from "./Components/WeatherIcon.js";
 import { Footer } from "./Components/Footer.js";
+import { Error } from "./Components/Error";
 
 function App() {
   const [data, setData] = useState({});
   const [location, setLocation] = useState("");
   const [theme, setTheme] = useState(null);
+  const [error, setError] = useState(false);
 
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`;
-
-  console.log(url);
 
   const searchLocation = (event) => {
     if (event.key === "Enter") {
@@ -28,9 +28,14 @@ function App() {
         .then((response) => {
           setData(response.data);
           console.log(response.data);
+          setError(false);
           setLocation("");
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.log(error);
+          setData({});
+          setError(true);
+        });
     }
   };
 
@@ -63,17 +68,18 @@ function App() {
     <div className="App">
       <Header handleThemeSwitch={handleThemeSwitch}></Header>
 
-      <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-400">
+      <div className="flex items-center justify-center h-screen  dark:bg-[#1a1a1b]">
         {/* Main Container */}
-        <div className="flex-grow max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-2xl mb-20 dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex-grow max-w-sm p-6 bg-white border border-gray-200 rounded-[12px] shadow-2xl mb-20 dark:bg-black dark:border-black dark:shadow-xl">
           {/* Search Bar */}
-          <div className="mb-4">
-            <SearchBar
-              location={location}
-              handleSearch={handleSearch}
-              searchLocation={searchLocation}
-            />
-          </div>
+          <SearchBar
+            location={location}
+            handleSearch={handleSearch}
+            searchLocation={searchLocation}
+          />
+
+          {error && <Error></Error>}
+
           {/* Top Left */}
           <div className="flex mb-20 justify-between">
             <div className="mr-4">
@@ -114,46 +120,46 @@ function App() {
           {/* Bottom Div with 3 Columns */}
           {data.name !== undefined && (
             <div className="grid grid-cols-3 gap-4 mt-4">
-              <div className="bg-gray-100 p-2 rounded-md text-center">
+              <div className="bg-gray-100 p-2 rounded-[8px] text-center dark:bg-[#1a1a1b]">
                 <img
                   src={feelsLike}
                   alt="feelsLikeIcon"
                   className="w-18 h-auto "
                 />
                 {data.main ? (
-                  <p className="font-semibold text-xl">
+                  <p className="font-semibold text-xl dark:text-white">
                     {data.main.feels_like.toFixed()}°C
                   </p>
                 ) : null}
-                <h2 className="font-normal">Feels Like</h2>
+                <h2 className="font-normal dark:text-white">Feels Like</h2>
               </div>
 
-              <div className="bg-gray-100 p-2 rounded-md text-center">
+              <div className="bg-gray-100 p-2 rounded-[8px] text-center dark:bg-[#1a1a1b]">
                 <img
                   src={humidityIcon}
                   alt="humidityIcon"
                   className="w-18 h-auto "
                 />
                 {data.main ? (
-                  <p className="font-semibold text-xl">
+                  <p className="font-semibold text-xl dark:text-white">
                     {data.main.humidity.toFixed()}%
                   </p>
                 ) : null}
-                <h2 className="font-normal">Humidity</h2>
+                <h2 className="font-normal dark:text-white">Humidity</h2>
               </div>
 
-              <div className="bg-gray-100 p-2 rounded-md text-center">
+              <div className="bg-gray-100 p-2 rounded-[8px] text-center dark:bg-[#1a1a1b]">
                 <img
                   src={windSock}
                   alt="windSockIcon"
                   className="w-18 h-auto "
                 />
                 {data.main ? (
-                  <p className="font-semibold text-xl">
+                  <p className="font-semibold text-xl dark:text-white">
                     {data.wind.speed.toFixed()} km/h
                   </p>
                 ) : null}
-                <h2 className="font-normal">Winds</h2>
+                <h2 className="font-normal dark:text-white">Winds</h2>
               </div>
             </div>
           )}
