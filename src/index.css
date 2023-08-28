@@ -20,3 +20,14 @@ code {
 html {
   overflow: hidden;
 }
+
+.card-container {
+  width: 300px; /* Set the minimum width */
+  max-width: 96%; /* Set the maximum width to prevent overflowing on small screens */
+}
+
+@media (min-width: 640px) {
+  .card-container {
+    width: 400px; /* Adjust the width for larger screens */
+  }
+}

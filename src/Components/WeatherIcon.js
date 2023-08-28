@@ -46,5 +46,5 @@ export const WeatherIcon = ({ weatherIcon, altText }) => {
     return null;
   }
 
-  return <img src={imageSrc} alt={altText} className="w-28 h-auto" />;
+  return <img src={imageSrc} alt={altText} className="w-28 sm:w-36  h-auto" />;
 };
