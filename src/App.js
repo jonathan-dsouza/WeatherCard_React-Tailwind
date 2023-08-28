@@ -35,6 +35,7 @@ function App() {
           console.log(error);
           setData({});
           setError(true);
+          setLocation("");
         });
     }
   };
@@ -81,44 +82,40 @@ function App() {
           {error && <Error></Error>}
 
           {/* Top Left */}
-          <div className="flex mb-20 justify-between">
-            <div className="mr-4">
-              <div className="location">
-                <p className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                  {data.name}
-                </p>
-              </div>
+          {data.main && (
+            <div className="flex  justify-between">
+              <div className="mr-4 my-8">
+                <div className="location">
+                  <p className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    {data.name}
+                  </p>
+                </div>
 
-              <div className="temp">
-                {data.main ? (
+                <div className="temp">
                   <h1 className="mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                     {data.main.temp.toFixed()}°C
                   </h1>
-                ) : null}
-              </div>
+                </div>
 
-              <div className="description">
-                {data.weather ? (
+                <div className="description">
                   <p className="text-gray-700 dark:text-gray-400 font-semibold text-xl">
                     {data.weather[0].main}
                   </p>
-                ) : null}
+                </div>
               </div>
-            </div>
 
-            {/* Top Right */}
-            <div className="flex-shrink">
-              {data.weather ? (
+              {/* Top Right */}
+              <div className="flex-shrink">
                 <WeatherIcon
                   weatherIcon={data.weather[0].icon}
                   altText={"WeatherIcon"}
                 />
-              ) : null}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Bottom Div with 3 Columns */}
-          {data.name !== undefined && (
+          {data.main && data.name !== undefined && (
             <div className="grid grid-cols-3 gap-4 mt-4">
               <div className="bg-gray-100 p-2 rounded-[8px] text-center dark:bg-[#1a1a1b]">
                 <img
@@ -126,11 +123,11 @@ function App() {
                   alt="feelsLikeIcon"
                   className="w-18 h-auto "
                 />
-                {data.main ? (
-                  <p className="font-semibold text-xl dark:text-white">
-                    {data.main.feels_like.toFixed()}°C
-                  </p>
-                ) : null}
+
+                <p className="font-semibold text-xl dark:text-white">
+                  {data.main.feels_like.toFixed()}°C
+                </p>
+
                 <h2 className="font-normal dark:text-white">Feels Like</h2>
               </div>
 
@@ -140,11 +137,11 @@ function App() {
                   alt="humidityIcon"
                   className="w-18 h-auto "
                 />
-                {data.main ? (
-                  <p className="font-semibold text-xl dark:text-white">
-                    {data.main.humidity.toFixed()}%
-                  </p>
-                ) : null}
+
+                <p className="font-semibold text-xl dark:text-white">
+                  {data.main.humidity.toFixed()}%
+                </p>
+
                 <h2 className="font-normal dark:text-white">Humidity</h2>
               </div>
 
@@ -154,11 +151,11 @@ function App() {
                   alt="windSockIcon"
                   className="w-18 h-auto "
                 />
-                {data.main ? (
-                  <p className="font-semibold text-xl dark:text-white">
-                    {data.wind.speed.toFixed()} km/h
-                  </p>
-                ) : null}
+
+                <p className="font-semibold text-xl dark:text-white">
+                  {data.wind.speed.toFixed()} km/h
+                </p>
+
                 <h2 className="font-normal dark:text-white">Winds</h2>
               </div>
             </div>
