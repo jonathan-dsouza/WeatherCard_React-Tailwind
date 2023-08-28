@@ -67,11 +67,11 @@ function App() {
 
   return (
     <div className="App">
-      <Header handleThemeSwitch={handleThemeSwitch}></Header>
+      <Header handleThemeSwitch={handleThemeSwitch} theme={theme}></Header>
 
       <div className="flex items-center justify-center h-screen  dark:bg-[#1a1a1b]">
         {/* Main Container */}
-        <div className="flex-grow max-w-sm p-6 bg-white border border-gray-200 rounded-[12px] shadow-2xl mb-20 dark:bg-black dark:border-black dark:shadow-xl">
+        <div className="flex-grow max-w-sm p-6 bg-white border border-gray-200 rounded-[12px] shadow-xl mb-20 dark:bg-black dark:border-black">
           {/* Search Bar */}
           <SearchBar
             location={location}
