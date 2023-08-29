@@ -18,7 +18,7 @@ code {
 }
 
 html {
-  overflow: hidden;
+  overflow: auto;
 }
 
 .card-container {
@@ -29,5 +29,9 @@ html {
 @media (min-width: 640px) {
   .card-container {
     width: 400px; /* Adjust the width for larger screens */
+  }
+
+  html {
+    overflow: hidden; /* Enable scrolling for larger screens */
   }
 }

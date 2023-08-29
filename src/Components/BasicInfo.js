@@ -4,7 +4,7 @@ import { WeatherIcon } from "./WeatherIcon";
 export const BasicInfo = ({ data }) => {
   return (
     <div className="flex  justify-between">
-      <div className="mr-4 my-8">
+      <div className="mr-4 mt-8 mb-4">
         <div className="location">
           <p className="mb-2 text-xl sm:text-2xl md:text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
             {data.name}
