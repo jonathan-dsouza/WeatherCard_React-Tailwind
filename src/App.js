@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import SunCalc from "suncalc";
 
 //Image imports
 import feelsLike from "./Assets/thermometer-celsius.svg";
@@ -16,6 +17,7 @@ import { Error } from "./Components/Error";
 import { BasicInfo } from "./Components/BasicInfo";
 import { TinyCard } from "./Components/TinyCard";
 import getMoonPhaseImage from "./Components/MoonPhaseImg";
+import { ExpandButton } from "./Components/ExpandButton";
 
 function App() {
   const [data, setData] = useState({});
@@ -23,10 +25,9 @@ function App() {
   const [location, setLocation] = useState("");
   const [theme, setTheme] = useState(null);
   const [error, setError] = useState(false);
+  const [expand, setExpand] = useState(false);
 
   const openWeather_url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${process.env.REACT_APP_OPENWEATHER_API_KEY}`;
-
-  const visualCrossing_url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/2023-08-29/?key=${process.env.REACT_APP_VISUALCROSSING_API_KEY}`;
 
   const searchLocation = (event) => {
     if (event.key === "Enter") {
@@ -37,23 +38,34 @@ function App() {
           console.log(response.data);
           setError(false);
           setLocation("");
+
+          const latitude = response.data.coord.lat;
+          const longitude = response.data.coord.lon;
+
+          const times = SunCalc.getTimes(new Date(), latitude, longitude);
+
+          const formattedCurrentDate = times.sunrise
+            .toISOString()
+            .split("T")[0]; // Use sunrise time as an approximation
+
+          const visualCrossing_url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${formattedCurrentDate}/?key=${process.env.REACT_APP_VISUALCROSSING_API_KEY}`;
+
+          axios
+            .get(visualCrossing_url)
+            .then((response) => {
+              setCurrentConditions(response.data.currentConditions);
+              console.log(response.data.currentConditions);
+            })
+            .catch((error) => {
+              console.log(error);
+              setCurrentConditions({});
+            });
         })
         .catch((error) => {
           console.log(error);
           setData({});
           setError(true);
           setLocation("");
-        });
-
-      axios
-        .get(visualCrossing_url)
-        .then((response) => {
-          setCurrentConditions(response.data.currentConditions);
-          console.log(response.data.currentConditions);
-        })
-        .catch((error) => {
-          console.log(error);
-          setCurrentConditions({});
         });
     }
   };
@@ -84,8 +96,14 @@ function App() {
     }
   };
 
-  const { image: moonPhaseImage, description: moonPhaseDescription } =
-    getMoonPhaseImage(currentConditions.moonphase);
+  const { image: moonPhaseImage, description: moonPhaseDescription } = (() => {
+    try {
+      return getMoonPhaseImage(currentConditions.moonphase);
+    } catch (error) {
+      console.error("Error fetching moon phase image:", error);
+      return { image: null, description: "" };
+    }
+  })();
 
   //For Dark theme switcher
   useEffect(() => {
@@ -114,7 +132,7 @@ function App() {
 
       <div className="flex items-center justify-center h-screen  dark:bg-[#1a1a1b]">
         {/* Main Container */}
-        <div className="flex flex-col gap-6 md:flex-row">
+        <div className="flex flex-col gap-0 sm:gap-3 md:flex-row">
           <div className="card-container p-6 mb-6 md:mb-20 bg-white border border-gray-200 rounded-lg shadow-xl dark:bg-black dark:border-none">
             {/* Search Bar */}
             <SearchBar
@@ -157,36 +175,38 @@ function App() {
               </div>
             )}
           </div>
-          {data.main && (
-            <div className="card-container p-6 bg-white border border-gray-200 rounded-lg shadow-xl dark:bg-black dark:border-none md:mb-20">
+          {data.main && currentConditions !== undefined && (
+            <ExpandButton expand={expand} setExpand={setExpand} theme={theme} />
+          )}
+
+          {currentConditions !== undefined && expand && (
+            <div className="card-container p-6 bg-white border border-gray-200 rounded-lg shadow-xl dark:bg-black dark:border-none mb-30 md:mb-20">
               {/* New Card Content */}
-              {data.main && data.name !== undefined && (
-                <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
-                  <TinyCard
-                    iconSrc={sunrise}
-                    altText={"sunriseIcon"}
-                    value={formatTimeToAMPM(currentConditions.sunrise)}
-                    units={""}
-                    description={"Sunrise"}
-                  />
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
+                <TinyCard
+                  iconSrc={sunrise}
+                  altText={"sunriseIcon"}
+                  value={formatTimeToAMPM(currentConditions.sunrise)}
+                  units={""}
+                  description={"Sunrise"}
+                />
 
-                  <TinyCard
-                    iconSrc={sunset}
-                    altText={"sunsetIcon"}
-                    value={formatTimeToAMPM(currentConditions.sunset)}
-                    units={""}
-                    description={"Sunset"}
-                  />
+                <TinyCard
+                  iconSrc={sunset}
+                  altText={"sunsetIcon"}
+                  value={formatTimeToAMPM(currentConditions.sunset)}
+                  units={""}
+                  description={"Sunset"}
+                />
 
-                  <TinyCard
-                    iconSrc={moonPhaseImage}
-                    altText={"moonPhaseIcon"}
-                    value={moonPhaseDescription}
-                    units={""}
-                    description={"Moon Phase"}
-                  />
-                </div>
-              )}
+                <TinyCard
+                  iconSrc={moonPhaseImage}
+                  altText={"moonPhaseIcon"}
+                  value={moonPhaseDescription}
+                  units={""}
+                  description={"Moon Phase"}
+                />
+              </div>
             </div>
           )}
         </div>
