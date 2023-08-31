@@ -31,43 +31,45 @@ function App() {
 
   const searchLocation = (event) => {
     if (event.key === "Enter") {
-      axios
-        .get(openWeather_url)
-        .then((response) => {
-          setData(response.data);
-          console.log(response.data);
-          setError(false);
-          setLocation("");
-
-          const latitude = response.data.coord.lat;
-          const longitude = response.data.coord.lon;
-
-          const times = SunCalc.getTimes(new Date(), latitude, longitude);
-
-          const formattedCurrentDate = times.sunrise
-            .toISOString()
-            .split("T")[0]; // Use sunrise time as an approximation
-
-          const visualCrossing_url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${formattedCurrentDate}/?key=${process.env.REACT_APP_VISUALCROSSING_API_KEY}`;
-
-          axios
-            .get(visualCrossing_url)
-            .then((response) => {
-              setCurrentConditions(response.data.currentConditions);
-              console.log(response.data.currentConditions);
-            })
-            .catch((error) => {
-              console.log(error);
-              setCurrentConditions({});
-            });
-        })
-        .catch((error) => {
-          console.log(error);
-          setData({});
-          setError(true);
-          setLocation("");
-        });
+      fetchData();
     }
+  };
+
+  const fetchData = () => {
+    axios.get(openWeather_url).then(handleWeatherData).catch(handleFetchError);
+  };
+
+  const handleWeatherData = (response) => {
+    setData(response.data);
+    console.log(response.data);
+    setError(false);
+    setLocation("");
+
+    const latitude = response.data.coord.lat;
+    const longitude = response.data.coord.lon;
+
+    const times = SunCalc.getTimes(new Date(), latitude, longitude);
+
+    const formattedCurrentDate = times.sunrise.toISOString().split("T")[0]; // Use sunrise time as an approximation
+
+    const visualCrossing_url = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${location}/${formattedCurrentDate}/?key=${process.env.REACT_APP_VISUALCROSSING_API_KEY}`;
+
+    axios
+      .get(visualCrossing_url)
+      .then(handleCurrentConditions)
+      .catch(handleFetchError);
+  };
+
+  const handleCurrentConditions = (response) => {
+    setCurrentConditions(response.data.currentConditions);
+    console.log(response.data.currentConditions);
+  };
+
+  const handleFetchError = (error) => {
+    console.log(error);
+    setData({});
+    setError(true);
+    setLocation("");
   };
 
   const handleSearch = (event) => {
@@ -105,7 +107,7 @@ function App() {
     }
   })();
 
-  //For Dark theme switcher
+  //For Theme switcher
   useEffect(() => {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       setTheme("dark");
