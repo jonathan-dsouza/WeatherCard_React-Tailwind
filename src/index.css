@@ -18,7 +18,7 @@ code {
 }
 
 html {
-  overflow: auto;
+  overflow: hidden; /* Hide scrollbar by default for larger screens */
 }
 
 .card-container {
@@ -28,10 +28,27 @@ html {
 
 @media (min-width: 640px) {
   .card-container {
-    width: 400px; /* Adjust the width for larger screens */
+    width: 400px;
   }
+}
 
+@media (max-width: 400px) and (max-height: 799px) {
+  /* Adjust the card size to make them smaller */
+  .card-container {
+    width: 290px; /* Adjust the width to your desired size */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 950px) {
+  .card-container {
+    width: 330px;
+  }
+}
+
+/* Media query for smaller screens */
+/* Enable scrolling for smaller screens */
+@media (max-width: 768px) {
   html {
-    overflow: hidden; /* Enable scrolling for larger screens */
+    overflow: auto;
   }
 }

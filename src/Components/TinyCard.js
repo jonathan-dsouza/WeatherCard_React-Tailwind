@@ -9,7 +9,7 @@ export const TinyCard = ({ iconSrc, altText, value, units, description }) => {
         className="w-12 sm:w-16 md:w-20 h-auto mx-auto mb-2"
       />
 
-      <p className="font-semibold text-center text-sm sm:text-sm md:text-xl dark:text-white">
+      <p className="font-semibold text-center text-sm sm:text-sm md:text-lg lg:text-xl dark:text-white">
         {value} {units}
       </p>
 

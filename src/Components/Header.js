@@ -8,7 +8,7 @@ export const Header = ({ handleThemeSwitch, theme }) => {
     window.location.reload();
   };
   return (
-    <header>
+    <header className="fixed top-0 left-0 right-0 z-50">
       <nav className="bg-white shadow-lg px-4 py-5 lg:px-6 dark:bg-black">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <a href="#" className="flex items-center" onClick={handleReload}>

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SunCalc from "suncalc";
 
-//Image imports
+// Image imports
 import feelsLike from "./Assets/thermometer-celsius.svg";
 import humidityIcon from "./Assets/raindrops.svg";
 import windSock from "./Assets/windsock.svg";
 import sunrise from "./Assets/sunrise.svg";
 import sunset from "./Assets/sunset.svg";
 
-//Component imports
+// Component imports
 import { Header } from "./Components/Header.js";
 import { SearchBar } from "./Components/SearchBar.js";
 import { Footer } from "./Components/Footer.js";
@@ -107,7 +107,7 @@ function App() {
     }
   })();
 
-  //For Theme switcher
+  // For Theme switcher
   useEffect(() => {
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       setTheme("dark");
@@ -130,11 +130,15 @@ function App() {
 
   return (
     <div className="App">
-      <Header handleThemeSwitch={handleThemeSwitch} theme={theme}></Header>
+      <Header handleThemeSwitch={handleThemeSwitch} theme={theme} />
 
-      <div className="flex items-center justify-center h-screen  dark:bg-[#1a1a1b]">
+      <div
+        className={`flex items-center justify-center h-screen overflow-y-auto dark:bg-[#1a1a1b] ${
+          expand ? "pt-36 pb-20 md:pt-0 md:pb-0" : ""
+        }`}
+      >
         {/* Main Container */}
-        <div className="flex flex-col gap-0 sm:gap-3 md:flex-row">
+        <div className="flex flex-col gap-0 sm:gap-3 md:flex-row mt-20">
           <div className="card-container p-6 mb-6 md:mb-20 bg-white border border-gray-200 rounded-lg shadow-xl dark:bg-black dark:border-none">
             {/* Search Bar */}
             <SearchBar
@@ -143,7 +147,7 @@ function App() {
               searchLocation={searchLocation}
             />
 
-            {error && <Error></Error>}
+            {error && <Error />}
 
             {/* Top Left */}
             {data.main && <BasicInfo data={data} />}
@@ -153,60 +157,60 @@ function App() {
               <div className="grid grid-cols-3 gap-4 mt-4">
                 <TinyCard
                   iconSrc={feelsLike}
-                  altText={"feelsLikeIcon"}
+                  altText="feelsLikeIcon"
                   value={data.main.feels_like.toFixed()}
-                  units={" °C"}
-                  description={"Feels Like"}
+                  units="°C"
+                  description="Feels Like"
                 />
 
                 <TinyCard
                   iconSrc={humidityIcon}
-                  altText={"humidityIcon"}
+                  altText="humidityIcon"
                   value={data.main.humidity.toFixed()}
-                  units={" %"}
-                  description={"Humidity"}
+                  units="%"
+                  description="Humidity"
                 />
 
                 <TinyCard
                   iconSrc={windSock}
-                  altText={"windSockIcon"}
+                  altText="windSockIcon"
                   value={data.wind.speed.toFixed()}
-                  units={" km/h"}
-                  description={"Winds"}
+                  units="km/h"
+                  description="Winds"
                 />
               </div>
             )}
           </div>
-          {data.main && currentConditions !== undefined && (
+          {data.main && currentConditions !== undefined && error === false && (
             <ExpandButton expand={expand} setExpand={setExpand} theme={theme} />
           )}
 
-          {currentConditions !== undefined && expand && (
+          {currentConditions !== undefined && expand && error === false && (
             <div className="card-container p-6 bg-white border border-gray-200 rounded-lg shadow-xl dark:bg-black dark:border-none mb-30 md:mb-20">
               {/* New Card Content */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4">
                 <TinyCard
                   iconSrc={sunrise}
-                  altText={"sunriseIcon"}
+                  altText="sunriseIcon"
                   value={formatTimeToAMPM(currentConditions.sunrise)}
-                  units={""}
-                  description={"Sunrise"}
+                  units=""
+                  description="Sunrise"
                 />
 
                 <TinyCard
                   iconSrc={sunset}
-                  altText={"sunsetIcon"}
+                  altText="sunsetIcon"
                   value={formatTimeToAMPM(currentConditions.sunset)}
-                  units={""}
-                  description={"Sunset"}
+                  units=""
+                  description="Sunset"
                 />
 
                 <TinyCard
                   iconSrc={moonPhaseImage}
-                  altText={"moonPhaseIcon"}
+                  altText="moonPhaseIcon"
                   value={moonPhaseDescription}
-                  units={""}
-                  description={"Moon Phase"}
+                  units=""
+                  description="Moon Phase"
                 />
               </div>
             </div>
